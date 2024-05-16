@@ -75,3 +75,6 @@
   }
 }
 
+input::placeholder {
+  color: var(--secondary);
+}
