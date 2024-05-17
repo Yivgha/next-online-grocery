@@ -8,7 +8,16 @@ const axiosClient = axios.create({
 const getCategories = () => axiosClient.get('/categories?sort=name&populate=*');
 
 const getSliders = () =>
-  axiosClient.get('/sliders?sort=name&populate=*').then((res) => res.data.data);
+  axiosClient
+    .get('/sliders?sort=name&populate=*')
+    .then((res) => res.data.data)
+    .catch((err) => console.log(err));
 
-export default { getCategories, getSliders };
+const getCategoryList = () =>
+  axiosClient
+    .get('/categories?sort=name&populate=*')
+    .then((res) => res.data.data)
+    .catch((err) => console.log(err));
+
+export default { getCategories, getSliders, getCategoryList };
 

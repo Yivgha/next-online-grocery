@@ -11,7 +11,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
 function Slider({ sliderList }) {
   return (
-    <div className='w-full flex flex-col items-center'>
+    <section className='w-full flex flex-col items-center'>
+      <h1 className='hidden'>Grocery store</h1>
       <Carousel
         plugins={[
           Autoplay({
@@ -34,7 +35,7 @@ function Slider({ sliderList }) {
           ))}
         </CarouselContent>
       </Carousel>
-    </div>
+    </section>
   );
 }
 
