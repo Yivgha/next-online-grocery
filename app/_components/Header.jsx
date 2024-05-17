@@ -16,6 +16,7 @@ import {
 import GlobalAPI from '../_utils/GlobalAPI';
 
 const outfit = Outfit({ subsets: ['latin'], display: 'swap' });
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
 function Header() {
   const [categoryList, setCategoryList] = useState([]);
@@ -25,9 +26,11 @@ function Header() {
       .then((res) => setCategoryList(res.data.data))
       .catch((err) => console.log(err));
   };
+
   useEffect(() => {
     getCategoriesList();
   }, []);
+
   return (
     <div className='min-h-5 w-full py-3 px-5 bg-primary shadow-md flex justify-between'>
       <div className='flex flex-row items-center gap-8'>
@@ -67,27 +70,20 @@ function Header() {
             className={cn(outfit.className, 'font-normal outline-none')}
           >
             {categoryList.map((el, idx) => (
-              <DropdownMenuItem className='cursor-pointer' key={idx}>
-                {/* <Image
-                  src={`http://localhost:1337/api${el.attributes.icon.data.attributes.url}`}
+              <DropdownMenuItem
+                className='cursor-pointer gap-3 items-center'
+                key={idx}
+              >
+                <Image
+                  src={BASE_URL + el.attributes.icon.data.attributes.url}
                   alt={el.attributes.name}
-                  width={40}
-                  height={40}
-                /> */}
-
-                {el.attributes.name}
+                  width={25}
+                  height={25}
+                  loading='lazy'
+                />
+                <p className='text-lg'>{el.attributes.name}</p>
               </DropdownMenuItem>
             ))}
-            {/* <DropdownMenuItem className='cursor-pointer'>
-              Profile
-            </DropdownMenuItem>
-            <DropdownMenuItem className='cursor-pointer'>
-              Billing
-            </DropdownMenuItem>
-            <DropdownMenuItem className='cursor-pointer'>Team</DropdownMenuItem>
-            <DropdownMenuItem className='cursor-pointer'>
-              Subscription
-            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
 
