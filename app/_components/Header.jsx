@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Outfit } from 'next/font/google';
 import Image from 'next/image';
 import Logo from '@/public/logo.png';
@@ -10,10 +13,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import GlobalAPI from '../_utils/GlobalAPI';
 
 const outfit = Outfit({ subsets: ['latin'], display: 'swap' });
 
 function Header() {
+  const [categoryList, setCategoryList] = useState([]);
+
+  const getCategoriesList = () => {
+    GlobalAPI.getCategories()
+      .then((res) => setCategoryList(res.data.data))
+      .catch((err) => console.log(err));
+  };
+  useEffect(() => {
+    getCategoriesList();
+  }, []);
   return (
     <div className='min-h-5 w-full py-3 px-5 bg-primary shadow-md flex justify-between'>
       <div className='flex flex-row items-center gap-8'>
@@ -44,7 +58,7 @@ function Header() {
             className={cn(outfit.className, 'font-normal cursor-pointer')}
             asChild
           >
-            <h2 className='hidden md:flex gap-2 items-center border rounded-full p-2 px-5 bg-slate-200 '>
+            <h2 className='hidden md:flex gap-2 items-center border rounded-full p-2 px-5 bg-slate-200'>
               <LayoutGrid className='w-5 h-5' />
               Category
             </h2>
@@ -52,7 +66,19 @@ function Header() {
           <DropdownMenuContent
             className={cn(outfit.className, 'font-normal outline-none')}
           >
-            <DropdownMenuItem className='cursor-pointer'>
+            {categoryList.map((el, idx) => (
+              <DropdownMenuItem className='cursor-pointer' key={idx}>
+                {/* <Image
+                  src={`http://localhost:1337/api${el.attributes.icon.data.attributes.url}`}
+                  alt={el.attributes.name}
+                  width={40}
+                  height={40}
+                /> */}
+
+                {el.attributes.name}
+              </DropdownMenuItem>
+            ))}
+            {/* <DropdownMenuItem className='cursor-pointer'>
               Profile
             </DropdownMenuItem>
             <DropdownMenuItem className='cursor-pointer'>
@@ -61,7 +87,7 @@ function Header() {
             <DropdownMenuItem className='cursor-pointer'>Team</DropdownMenuItem>
             <DropdownMenuItem className='cursor-pointer'>
               Subscription
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
 
