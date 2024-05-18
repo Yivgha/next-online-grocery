@@ -15,7 +15,7 @@ function ProductList({ productList }) {
       )}
     >
       <h3 className='text-primary font-bold text-2xl'>Popular products</h3>
-      <div className='grid grid-cols-2 md:grid-cols-3 ld:grid-cols-4 gap-1 md:gap-3'>
+      <div className='grid grid-cols-1 md:grid-cols-3 ld:grid-cols-4 gap-1 md:gap-3'>
         {productList?.map((product, idx) => (
           <ProductItem key={idx} product={product} />
         ))}

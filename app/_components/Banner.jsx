@@ -21,7 +21,7 @@ function Banner() {
         height={500}
         width={1400}
         loading='lazy'
-        className='w-full h-[250px] md:h-[600px] object-cover rounded-xl'
+        className='w-full h-[250px] md:h-[750px] object-cover rounded-xl'
       />
       <Testimonials />
       <div className='flex flex-row gap-1 justify-center w-full'>

@@ -1,6 +1,16 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import ProductItemDetail from './ProductItemDetail';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
@@ -38,7 +48,21 @@ function ProductItem({ product }) {
           </p>
         </div>
       </div>
-      <Button className='rounded-b-2xl'>Add to cart</Button>
+
+      {/* DIALOG */}
+
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button className='rounded-b-2xl'>Add to cart</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogDescription>
+              <ProductItemDetail product={product} />
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
