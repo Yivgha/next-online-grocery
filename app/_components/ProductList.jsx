@@ -8,9 +8,10 @@ const outfit = Outfit({ subsets: ['latin'], display: 'swap' });
 function ProductList({ productList }) {
   return (
     <section
+      id='products'
       className={cn(
         outfit.className,
-        'w-full h-[500px] overflow-y-scroll flex flex-col gap-2'
+        'w-full h-[650px] overflow-y-scroll flex flex-col gap-2'
       )}
     >
       <h3 className='text-primary font-bold text-2xl'>Popular products</h3>

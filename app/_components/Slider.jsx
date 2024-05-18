@@ -11,7 +11,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
 function Slider({ sliderList }) {
   return (
-    <section className='w-full flex flex-col items-center'>
+    <section id='slider' className='w-full flex flex-col items-center'>
       <h1 className='hidden'>Grocery store</h1>
       <Carousel
         plugins={[

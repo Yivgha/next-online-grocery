@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Outfit } from 'next/font/google';
 import Image from 'next/image';
-import Logo from '@/public/logo.png';
 import { cn } from '@/lib/utils';
 import { LayoutGrid, Search, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import GlobalAPI from '../_utils/GlobalAPI';
+import LogoImg from './LogoImg';
 
 const outfit = Outfit({ subsets: ['latin'], display: 'swap' });
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
@@ -32,29 +32,12 @@ function Header() {
   }, []);
 
   return (
-    <div className='min-h-5 w-full py-3 px-5 bg-primary shadow-md flex justify-between'>
+    <header
+      className='min-h-5 w-full py-3 px-5 bg-primary shadow-md flex justify-between'
+      id='header'
+    >
       <div className='flex flex-row items-center gap-8'>
-        <div className='flex flex-row gap-1 items-center'>
-          <Image src={Logo} alt='Logo' className='md:w-10 md:h-10 w-5 h-5' />
-          <div className='flex flex-col justify-center'>
-            <p
-              className={cn(
-                outfit.className,
-                'font-black uppercase text-secondary'
-              )}
-            >
-              Grocery
-            </p>
-            <p
-              className={cn(
-                outfit.className,
-                'font-black uppercase text-secondary'
-              )}
-            >
-              Store
-            </p>
-          </div>
-        </div>
+        <LogoImg />
 
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -102,7 +85,7 @@ function Header() {
         </h2>
         <Button className='bg-secondary text-primary'>Login</Button>
       </div>
-    </div>
+    </header>
   );
 }
 

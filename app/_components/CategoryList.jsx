@@ -8,6 +8,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 function CategoryList({ categoryList }) {
   return (
     <section
+      id='categories'
       className={cn(
         outfit.className,
         'flex flex-col gap-3 w-full sm:h-300 sm:overflow-y-scroll no-scrollbar'

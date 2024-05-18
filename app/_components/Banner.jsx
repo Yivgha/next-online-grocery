@@ -11,7 +11,7 @@ const outfit = Outfit({ subsets: ['latin'], display: 'swap' });
 
 function Banner() {
   return (
-    <div className='w-full flex flex-col gap-1 md:gap-3'>
+    <section className='w-full flex flex-col gap-1 md:gap-3'>
       <h3 className={cn(outfit.className, 'text-primary font-bold text-2xl')}>
         Delivery service
       </h3>
@@ -30,7 +30,7 @@ function Banner() {
           Contact us!
         </Link>
       </div>
-    </div>
+    </section>
   );
 }
 
