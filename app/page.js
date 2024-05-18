@@ -2,6 +2,7 @@ import CategoryList from './_components/CategoryList';
 import Slider from './_components/Slider';
 import ProductList from './_components/ProductList';
 import GlobalAPI from './_utils/GlobalAPI';
+import Banner from './_components/Banner';
 
 export default async function Home() {
   const sliderList = await GlobalAPI.getSliders();
@@ -13,6 +14,7 @@ export default async function Home() {
       <Slider sliderList={sliderList} />
       <CategoryList categoryList={categoryList} />
       <ProductList productList={productList} />
+      <Banner />
     </main>
   );
 }

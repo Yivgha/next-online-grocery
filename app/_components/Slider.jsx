@@ -26,10 +26,10 @@ function Slider({ sliderList }) {
               <Image
                 src={BASE_URL + el.attributes.image.data.attributes.url}
                 alt={el.attributes.name}
-                height={400}
-                width={640}
+                height={500}
+                width={1400}
                 loading='lazy'
-                className='w-full h-[250px] md:h-[450px] object-cover rounded-xl'
+                className='w-full h-[250px] md:h-[550px] object-cover rounded-xl'
               />
             </CarouselItem>
           ))}
