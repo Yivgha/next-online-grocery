@@ -20,7 +20,7 @@ function Banner() {
         alt='banner'
         height={500}
         width={1400}
-        loading='lazy'
+        priority={true}
         className='w-full h-[250px] md:h-[750px] object-cover rounded-xl'
       />
       <Testimonials />

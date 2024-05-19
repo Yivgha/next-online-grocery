@@ -30,10 +30,33 @@ const getAllProducts = () =>
 const getProductsByCategory = (categoryName) =>
   axiosClient
     .get(
-      `products?filters[categories][name][$eq]=${categoryName}&sort=name&pagination[page]=1&pagination[pageSize]=3&populate=*`
+      `/products?filters[categories][name][$eq]=${categoryName}&sort=name&pagination[page]=1&pagination[pageSize]=3&populate=*`
     )
     .then((res) => res.data.data)
     .catch((err) => console.log(err));
+
+const registerUser = (userData) =>
+  axiosClient.post('/auth/local/register', userData).catch((err) => {
+    console.error('Error during user registration:', err);
+
+    const errorMessage =
+      err.response?.data?.error?.message ?? 'Something went wrong';
+    return { error: true, message: errorMessage };
+  });
+
+const signInUser = (userData) =>
+  axiosClient
+    .post('/auth/local', {
+      identifier: userData.email,
+      password: userData.password,
+    })
+    .catch((err) => {
+      console.error('Error during user registration:', err);
+
+      const errorMessage =
+        err.response?.data?.error?.message ?? 'Something went wrong';
+      return { error: true, message: errorMessage };
+    });
 
 export default {
   getCategories,
@@ -41,5 +64,7 @@ export default {
   getCategoryList,
   getAllProducts,
   getProductsByCategory,
+  registerUser,
+  signInUser,
 };
 
