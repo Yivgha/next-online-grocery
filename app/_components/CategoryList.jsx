@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { Outfit } from 'next/font/google';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const outfit = Outfit({ subsets: ['latin'], display: 'swap' });
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
@@ -17,8 +18,9 @@ function CategoryList({ categoryList }) {
       <h3 className='text-primary font-bold text-2xl'>Shop by Category</h3>
       <div className='grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-1 md:gap-3'>
         {categoryList.map((cat, idx) => (
-          <div
+          <Link
             key={idx}
+            href={'/products-category/' + cat.attributes.name}
             className='flex flex-col h-full bg-green-100 rounded-2xl cursor-pointer border border-primary '
           >
             <div className='p-1 md:p-6 flex flex-col items-center gap-1 md:gap-3 flex-grow group hover:bg-green-300 rounded-2xl'>
@@ -34,7 +36,7 @@ function CategoryList({ categoryList }) {
                 {cat.attributes.name}
               </p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

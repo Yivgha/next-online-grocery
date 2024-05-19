@@ -27,19 +27,19 @@ const getAllProducts = () =>
     .then((res) => res.data.data)
     .catch((err) => console.log(err));
 
-// const getProductsByCategory = () => {
-//   axiosClient
-//     .get(
-//       '/categories?filter[Name]=Bakery&sort=name&pagination[page]=1&pagination[pageSize]=3&populate=*'
-//     )
-//     .then((res) => res.data.data)
-//     .catch((err) => console.log(err));
-// };
+const getProductsByCategory = (categoryName) =>
+  axiosClient
+    .get(
+      `products?filters[categories][name][$eq]=${categoryName}&sort=name&pagination[page]=1&pagination[pageSize]=3&populate=*`
+    )
+    .then((res) => res.data.data)
+    .catch((err) => console.log(err));
 
 export default {
   getCategories,
   getSliders,
   getCategoryList,
   getAllProducts,
+  getProductsByCategory,
 };
 

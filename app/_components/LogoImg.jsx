@@ -8,7 +8,7 @@ const outfit = Outfit({ subsets: ['latin'], display: 'swap' });
 function LogoImg() {
   return (
     <div>
-      <a href='#header'>
+      <a href='/'>
         <div className='flex flex-row gap-1 items-center cursor-pointer'>
           <Image src={Logo} alt='Logo' className='md:w-10 md:h-10 w-5 h-5' />
           <div className='flex flex-col justify-center'>

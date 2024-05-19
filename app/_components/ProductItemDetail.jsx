@@ -15,7 +15,7 @@ function ProductItemDetail({ product }) {
 
   return (
     <div className='flex flex-col md:flex-row justify-center gap-5 w-full max-h-[90vh] p-5 overflow-y-scroll lg:overflow-y-auto lg:no-scrollbar'>
-      <div className='flex-1 w-full h-auto bg-slate-200 p-5 rounded-xl items-center'>
+      <div className='flex-1 w-full h-auto rounded-xl items-center'>
         <Image
           src={BASE_URL + product.attributes.images.data[0].attributes.url}
           alt='product'

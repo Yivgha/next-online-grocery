@@ -13,7 +13,7 @@ export default async function Home() {
     <main className='flex min-h-screen flex-col items-center px-6 md:py-10 py-4 gap-3 md:gap-8 transition-all scroll-smooth'>
       <Slider sliderList={sliderList} />
       <CategoryList categoryList={categoryList} />
-      <ProductList productList={productList} />
+      <ProductList productList={productList} title='Popular products' />
       <Banner />
     </main>
   );

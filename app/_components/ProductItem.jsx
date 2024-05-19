@@ -16,7 +16,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
 function ProductItem({ product }) {
   return (
-    <div className='flex flex-col h-full bg-green-100 rounded-2xl cursor-pointer border border-primary hover:scale-95 hover:shadow-md transition-all ease-in-out'>
+    <div className='flex flex-col h-full bg-green-100 rounded-2xl border border-primary hover:scale-95 hover:shadow-md transition-all ease-in-out'>
       <div className='p-3 md:p-6 flex flex-col items-center gap-1 md:gap-3 flex-grow group hover:bg-green-300 rounded-t-2xl'>
         <Image
           src={BASE_URL + product.attributes.images.data[0].attributes?.url}

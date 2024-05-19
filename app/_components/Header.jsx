@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import GlobalAPI from '../_utils/GlobalAPI';
 import LogoImg from './LogoImg';
+import Link from 'next/link';
 
 const outfit = Outfit({ subsets: ['latin'], display: 'swap' });
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
@@ -33,7 +34,7 @@ function Header() {
 
   return (
     <header
-      className='min-h-5 w-full py-3 px-5 bg-primary shadow-md flex justify-between'
+      className='min-h-5 w-full py-3 px-5 bg-primary shadow-md flex flex-col md:flex-row  items-center justify-center md:justify-between gap-3 md:gap-0'
       id='header'
     >
       <div className='flex flex-row items-center gap-8'>
@@ -53,19 +54,18 @@ function Header() {
             className={cn(outfit.className, 'font-normal outline-none')}
           >
             {categoryList.map((el, idx) => (
-              <DropdownMenuItem
-                className='cursor-pointer gap-3 items-center'
-                key={idx}
-              >
-                <Image
-                  src={BASE_URL + el.attributes.icon.data.attributes.url}
-                  alt={el.attributes.name}
-                  width={25}
-                  height={25}
-                  loading='lazy'
-                />
-                <p className='text-lg'>{el.attributes.name}</p>
-              </DropdownMenuItem>
+              <Link href={'/products-category/' + el.attributes.name} key={idx}>
+                <DropdownMenuItem className='gap-3 items-center cursor-pointer'>
+                  <Image
+                    src={BASE_URL + el.attributes.icon.data.attributes.url}
+                    alt={el.attributes.name}
+                    width={25}
+                    height={25}
+                    loading='lazy'
+                  />
+                  <p className='text-lg'>{el.attributes.name}</p>
+                </DropdownMenuItem>
+              </Link>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
