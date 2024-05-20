@@ -74,10 +74,52 @@ const getCartItems = (userID, jwt) =>
   axiosClient
     .get(`/user-carts?filters[userID][$eq]=${userID}&populate=*`, {
       headers: {
-        Authorization: 'Bearer' + jwt,
+        Authorization: 'Bearer ' + jwt,
       },
     })
     .then((res) => res.data.data)
+    .catch((err) =>
+      console.log('Error while getting user cart items', err.message)
+    );
+
+const getCartItemsAndImages = (userID, jwt) =>
+  axiosClient
+    .get(
+      `/user-carts?filters[userID][$eq]=${userID}&[populate][products][populate][images][populate][0]=url`,
+      {
+        headers: {
+          Authorization: 'Bearer ' + jwt,
+        },
+      }
+    )
+    .then((res) => {
+      const data = res.data.data;
+      const cartItemsList = data.map((item) => ({
+        name: item.attributes.products.data[0].attributes.name,
+        quantity: item.attributes.quantity,
+        amount: item.attributes.amount,
+        image:
+          item.attributes.products.data[0].attributes.images.data[0].attributes
+            .url,
+        actual_price: item.attributes.products.data[0].attributes.actual_price,
+        selling_price:
+          item.attributes.products.data[0].attributes.selling_price,
+        product_id: item.id,
+      }));
+
+      return cartItemsList;
+    })
+    .catch((err) =>
+      console.log('Error while getting user cart items', err.message)
+    );
+
+const deleteCartItem = (cartItemId, jwt) =>
+  axiosClient
+    .delete(`/user-carts/${cartItemId}`, {
+      headers: {
+        Authorization: 'Bearer ' + jwt,
+      },
+    })
     .catch((err) =>
       console.log('Error while getting user cart items', err.message)
     );
@@ -92,5 +134,7 @@ export default {
   signInUser,
   addToCart,
   getCartItems,
+  getCartItemsAndImages,
+  deleteCartItem,
 };
 

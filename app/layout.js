@@ -14,6 +14,7 @@ export default function RootLayout({ children }) {
   const [updateCart, setUpdateCart] = useState(false);
   return (
     <html lang='en'>
+      <title>Online grocery store</title>
       <body className={roboto.className}>
         <UpdateCartContext.Provider value={{ updateCart, setUpdateCart }}>
           <Header />

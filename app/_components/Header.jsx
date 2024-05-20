@@ -14,11 +14,22 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import GlobalAPI from '../_utils/GlobalAPI';
 import LogoImg from './LogoImg';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { UpdateCartContext } from '../_context/UpdateCartContext';
+import CartItemsList from './CartItemsList';
+import { toast } from 'sonner';
 
 const outfit = Outfit({ subsets: ['latin'], display: 'swap' });
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
@@ -26,11 +37,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 function Header() {
   const [categoryList, setCategoryList] = useState([]);
   const [totalCartItems, setTotalCartItems] = useState(0);
+  const [cartItemList, setCartItemList] = useState([]);
+  const [subtotal, setSubtotal] = useState(0);
 
   const storageUser = JSON.parse(localStorage.getItem('user'));
   const jwt = localStorage.getItem('jwt');
 
-  const { updateCart, setUpdateCart } = useContext(UpdateCartContext);
+  const { updateCart } = useContext(UpdateCartContext);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -51,12 +64,40 @@ function Header() {
       );
   };
 
+  const getCartItemList = async () => {
+    if (storageUser)
+      await GlobalAPI.getCartItemsAndImages(storageUser.id, jwt).then((res) =>
+        setCartItemList(res)
+      );
+  };
+
+  const onDeleteItem = (id) => {
+    if (jwt) {
+      GlobalAPI.deleteCartItem(id, jwt)
+        .then((res) => {
+          toast('Item deleted');
+          getCartItems();
+          getCartItemList();
+        })
+        .catch((err) => toast('Error while deleting item from cart'));
+    }
+  };
+
+  useEffect(() => {
+    let total = 0;
+
+    cartItemList.forEach((el) => (total = total + el.amount));
+
+    setSubtotal(total.toFixed(2));
+  }, [cartItemList]);
+
   useEffect(() => {
     getCategoriesList();
   }, []);
 
   useEffect(() => {
     getCartItems();
+    getCartItemList();
   }, [updateCart]);
 
   return (
@@ -114,12 +155,45 @@ function Header() {
         )}
       </div>
       <div className='flex gap-5 items-center'>
-        <h2 className='flex gap-2 items-center text-lg'>
-          <ShoppingBag className='text-secondary' />
-          <span className='bg-green-100 rounded-full px-2 text-primary font-bold'>
-            {totalCartItems}
-          </span>
-        </h2>
+        {/* CART ITEMS RIGHT MENU */}
+        {storageUser && (
+          <Sheet asChild>
+            <SheetTrigger>
+              <h2 className='flex gap-2 items-center text-lg'>
+                <ShoppingBag className='text-secondary' />
+                <span className='bg-green-100 rounded-full px-2 text-primary font-bold'>
+                  {totalCartItems}
+                </span>
+              </h2>
+            </SheetTrigger>
+            <SheetContent className='flex flex-col gap-3'>
+              <SheetHeader>
+                <SheetTitle className='font-bold text-primary text-3xl mb-3'>
+                  My Cart
+                </SheetTitle>
+                <SheetDescription className='w-full'>
+                  <CartItemsList
+                    cartItemList={cartItemList}
+                    onDeleteItem={onDeleteItem}
+                  />
+                </SheetDescription>
+              </SheetHeader>
+              <SheetClose asChild>
+                <div className='w-[90%] p-2 flex flex-col gap-2 absolute bottom-2'>
+                  <p className='font-bold text-green-700 text-lg md:text-2xl'>
+                    Subtotal: <span>{subtotal} UAH</span>
+                  </p>
+                  <Button
+                    onClick={() => router.push(jwt ? '/checkout' : '/sign-in')}
+                  >
+                    Checkout
+                  </Button>
+                </div>
+              </SheetClose>
+            </SheetContent>
+          </Sheet>
+        )}
+
         {storageUser ? (
           <div className='flex flex-row gap-2 items-center'>
             <h4 className='text-secondary'>{storageUser?.username}</h4>
@@ -162,4 +236,3 @@ function Header() {
 }
 
 export default Header;
-
