@@ -35,6 +35,7 @@ const getProductsByCategory = (categoryName) =>
     .then((res) => res.data.data)
     .catch((err) => console.log(err));
 
+// USER LOGIN AND REGISTER
 const registerUser = (userData) =>
   axiosClient.post('/auth/local/register', userData).catch((err) => {
     console.error('Error during user registration:', err);
@@ -58,6 +59,29 @@ const signInUser = (userData) =>
       return { error: true, message: errorMessage };
     });
 
+// USER CART
+
+const addToCart = (data, jwt) =>
+  axiosClient
+    .post('/user-carts', data, {
+      headers: {
+        Authorization: 'Bearer ' + jwt,
+      },
+    })
+    .catch((err) => console.log(err.message));
+
+const getCartItems = (userID, jwt) =>
+  axiosClient
+    .get(`/user-carts?filters[userID][$eq]=${userID}&populate=*`, {
+      headers: {
+        Authorization: 'Bearer' + jwt,
+      },
+    })
+    .then((res) => res.data.data)
+    .catch((err) =>
+      console.log('Error while getting user cart items', err.message)
+    );
+
 export default {
   getCategories,
   getSliders,
@@ -66,5 +90,7 @@ export default {
   getProductsByCategory,
   registerUser,
   signInUser,
+  addToCart,
+  getCartItems,
 };
 

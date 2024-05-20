@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Outfit } from 'next/font/google';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -18,28 +18,46 @@ import GlobalAPI from '../_utils/GlobalAPI';
 import LogoImg from './LogoImg';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { UpdateCartContext } from '../_context/UpdateCartContext';
 
 const outfit = Outfit({ subsets: ['latin'], display: 'swap' });
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
 function Header() {
   const [categoryList, setCategoryList] = useState([]);
+  const [totalCartItems, setTotalCartItems] = useState(0);
 
   const storageUser = JSON.parse(localStorage.getItem('user'));
+  const jwt = localStorage.getItem('jwt');
+
+  const { updateCart, setUpdateCart } = useContext(UpdateCartContext);
 
   const router = useRouter();
   const pathname = usePathname();
   const isSignIn = pathname === '/sign-in' || pathname === '/create-account';
 
+  // GET ALL CATEGORIES
   const getCategoriesList = () => {
     GlobalAPI.getCategories()
       .then((res) => setCategoryList(res.data.data))
       .catch((err) => console.log(err));
   };
 
+  // GET ITEMS FROM USER CART
+  const getCartItems = async () => {
+    if (storageUser)
+      await GlobalAPI.getCartItems(storageUser.id, jwt).then((res) =>
+        setTotalCartItems(res.length)
+      );
+  };
+
   useEffect(() => {
     getCategoriesList();
   }, []);
+
+  useEffect(() => {
+    getCartItems();
+  }, [updateCart]);
 
   return (
     <header
@@ -85,7 +103,7 @@ function Header() {
         )}
 
         {!isSignIn && (
-          <div className='gap-3 items-center border rounded-full py-2 px-5 hidden md:flex '>
+          <div className='gap-3 items-center border rounded-full py-2 px-5 hidden md:flex'>
             <Search className='w-5 h-5 text-secondary' />
             <input
               type='text'
@@ -96,8 +114,11 @@ function Header() {
         )}
       </div>
       <div className='flex gap-5 items-center'>
-        <h2 className='flex gap-2 items-center text-lg text-secondary'>
-          <ShoppingBag />0
+        <h2 className='flex gap-2 items-center text-lg'>
+          <ShoppingBag className='text-secondary' />
+          <span className='bg-green-100 rounded-full px-2 text-primary font-bold'>
+            {totalCartItems}
+          </span>
         </h2>
         {storageUser ? (
           <div className='flex flex-row gap-2 items-center'>

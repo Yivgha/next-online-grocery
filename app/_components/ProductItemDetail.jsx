@@ -3,15 +3,59 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag } from 'lucide-react';
+import { LoaderIcon, ShoppingBag } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import GlobalAPI from '../_utils/GlobalAPI';
+import { toast } from 'sonner';
+import { UpdateCartContext } from '../_context/UpdateCartContext';
+import { useContext } from 'react';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
 function ProductItemDetail({ product }) {
+  const jwt = localStorage.getItem('jwt');
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  const router = useRouter();
+
   const [productTotalPrice, setProductTotalPrice] = useState(
     product.attributes.selling_price ?? product.attributes.actual_price
   );
+
+  const { updateCart, setUpdateCart } = useContext(UpdateCartContext);
+
   const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  const addToCart = () => {
+    setLoading(true);
+    if (!jwt) {
+      router.push('/sign-in');
+      setLoading(false);
+      return;
+    }
+
+    const data = {
+      data: {
+        quantity: quantity,
+        amount: (quantity * productTotalPrice).toFixed(2),
+        products: product.id,
+        users_permissions_users: user.id,
+        userID: user.id,
+      },
+    };
+
+    GlobalAPI.addToCart(data, jwt)
+      .then((res) => {
+        toast('Added to cart');
+        setUpdateCart(!updateCart);
+        setLoading(false);
+      })
+      .catch((err) => {
+        toast('Error while adding to cart', err.message);
+        setLoading(false);
+      });
+  };
 
   return (
     <div className='flex flex-col md:flex-row justify-center gap-5 w-full max-h-[90vh] p-5 overflow-y-scroll lg:overflow-y-auto lg:no-scrollbar'>
@@ -73,13 +117,20 @@ function ProductItemDetail({ product }) {
               +
             </button>
           </div>
-          <h4 className='text-green-700 text-lg'>
+          <p className='text-green-700 text-lg'>
             <span className='font-bold'>Total: </span>
             {(quantity * productTotalPrice).toFixed(2)} <span>UAH</span>
-          </h4>
-          <Button className='flex flex-row gap-1 items-center'>
+          </p>
+          <Button
+            className='flex flex-row gap-3 items-center'
+            onClick={() => addToCart()}
+          >
             <ShoppingBag />
-            Add to Cart
+            {loading ? (
+              <LoaderIcon className='animation-spinner' />
+            ) : (
+              'Add to Cart'
+            )}
           </Button>
         </div>
         <h4 className='text-primary'>

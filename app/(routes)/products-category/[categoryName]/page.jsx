@@ -10,6 +10,7 @@ export default async function ProductCategory({ params }) {
   const productList = await GlobalAPI.getProductsByCategory(
     params.categoryName
   );
+
   const categoryList = await GlobalAPI.getCategoryList();
 
   return (
@@ -20,7 +21,7 @@ export default async function ProductCategory({ params }) {
       )}
     >
       <h2 className='font-bold text-3xl text-green-700'>
-        {params.categoryName}
+        {decodeURIComponent(params.categoryName)}
       </h2>
       <TopCategoryList
         categoryList={categoryList}
