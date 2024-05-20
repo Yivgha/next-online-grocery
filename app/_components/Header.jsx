@@ -85,9 +85,7 @@ function Header() {
 
   useEffect(() => {
     let total = 0;
-
     cartItemList.forEach((el) => (total = total + el.amount));
-
     setSubtotal(total.toFixed(2));
   }, [cartItemList]);
 
@@ -236,3 +234,4 @@ function Header() {
 }
 
 export default Header;
+
