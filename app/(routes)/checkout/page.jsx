@@ -9,6 +9,7 @@ import { ArrowBigRight } from 'lucide-react';
 import GlobalAPI from '@/app/_utils/GlobalAPI';
 import { UpdateCartContext } from '@/app/_context/UpdateCartContext';
 import { useRouter } from 'next/navigation';
+import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 const outfit = Outfit({ subsets: ['latin'], weight: '400', display: 'swap' });
 
@@ -23,8 +24,11 @@ function Checkout() {
   const [cartItemList, setCartItemList] = useState([]);
   const [totalCartItems, setTotalCartItems] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
+  const [tax, setTax] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [convertedInUSD, setConvertedInUSD] = useState(0);
+  const [isCalculating, setIsCalculating] = useState(true);
 
-  let totalAmount = 0;
   const [username, setUsername] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -47,25 +51,40 @@ function Checkout() {
   }, [updateCart]);
 
   useEffect(() => {
-    let total = 0;
-    cartItemList.forEach((el) => (total = total + el.amount));
-    setSubtotal(total.toFixed(2));
+    if (cartItemList.length > 0) {
+      setIsCalculating(true);
+      let total = 0;
+      cartItemList.forEach((el) => (total += el.amount));
+      const calculatedSubtotal = Number(total.toFixed(2));
+      setSubtotal(calculatedSubtotal);
+      console.log('Calculated Subtotal:', calculatedSubtotal);
+
+      const calcTax = Number((calculatedSubtotal * 0.15).toFixed(2));
+      setTax(calcTax);
+
+      const calcTotalAmount = calculatedSubtotal * 1.15 + 30;
+      const totalAmountInUAH = Number(calcTotalAmount.toFixed(2));
+      setTotalAmount(totalAmountInUAH);
+      console.log('Calculated Total:', totalAmountInUAH);
+
+      const exchangeRate = 0.036;
+      const calcInUSD = totalAmountInUAH * exchangeRate;
+      const totalAmountInUSD = Number(calcInUSD.toFixed(2));
+      setConvertedInUSD(totalAmountInUSD);
+      console.log('Calculated USD:', totalAmountInUSD);
+
+      setIsCalculating(false);
+    }
   }, [cartItemList]);
 
-  const calculateTotalPrice = () => {
-    totalAmount = subtotal * 1.15 + 30;
-    return totalAmount.toFixed(2);
-  };
-
   const onSubmit = () => {
-    const totalPriceFixed = totalAmount.toFixed(2);
     const data = {
       username,
       email,
       phone,
       zip,
       address,
-      totalPriceFixed,
+      totalAmount,
     };
     console.log(data);
   };
@@ -118,19 +137,44 @@ function Checkout() {
               Delivery: <span>30 UAH</span>
             </p>
             <p className='flex justify-between'>
-              Tax (15%): <span>{(subtotal * 0.15).toFixed(2)} UAH</span>
+              Tax (15%): <span>{tax} UAH</span>
             </p>
             <hr />
             <h4 className='text-green-700 font-bold text-lg flex justify-between'>
-              Total: <span>{calculateTotalPrice()} UAH</span>
+              Total: <span>{totalAmount} UAH</span>
             </h4>
-            <Button
+            {/* <Button
               type='submit'
               className='flex flex-row gap-2 items-center'
               onClick={onSubmit}
             >
               Payment <ArrowBigRight />
-            </Button>
+            </Button> */}
+
+            {!isCalculating && (
+              <PayPalScriptProvider
+                options={{
+                  clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+                  currency: 'USD',
+                }}
+              >
+                <PayPalButtons
+                  style={{ layout: 'horizontal', tagline: false }}
+                  createOrder={(data, actions) => {
+                    return actions.order.create({
+                      purchase_units: [
+                        {
+                          amount: {
+                            value: convertedInUSD,
+                            currency_code: 'USD',
+                          },
+                        },
+                      ],
+                    });
+                  }}
+                />
+              </PayPalScriptProvider>
+            )}
           </div>
         </div>
       </div>
