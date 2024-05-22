@@ -74,14 +74,14 @@ export function CreateForm() {
     const jwt = localStorage.getItem('jwt');
     const user = JSON.parse(localStorage.getItem('user'));
     if (jwt && user) {
-      return router.push('/');
+      return router.replace('/');
     }
   };
 
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
-      router.push('/');
+      router.replace('/');
     }
   }, []);
 
@@ -167,4 +167,6 @@ export function CreateForm() {
 }
 
 export default CreateForm;
+
+
 

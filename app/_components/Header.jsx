@@ -182,7 +182,9 @@ function Header() {
                     Subtotal: <span>{subtotal} UAH</span>
                   </p>
                   <Button
-                    onClick={() => router.push(jwt ? '/checkout' : '/sign-in')}
+                    onClick={() =>
+                      router.replace(jwt ? '/checkout' : '/sign-in')
+                    }
                   >
                     Checkout
                   </Button>
@@ -205,14 +207,17 @@ function Header() {
                 <DropdownMenuItem className='cursor-pointer'>
                   Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem className='cursor-pointer'>
+                <DropdownMenuItem
+                  className='cursor-pointer'
+                  onClick={() => router.replace('/my-order')}
+                >
                   My orders
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className='cursor-pointer'
                   onClick={() => {
                     localStorage.clear();
-                    router.push('/sign-in');
+                    router.replace('/sign-in');
                   }}
                 >
                   Sign out
@@ -223,7 +228,7 @@ function Header() {
         ) : (
           <Button
             className='bg-secondary text-primary hover:bg-green-100'
-            onClick={() => router.push('/sign-in')}
+            onClick={() => router.replace('/sign-in')}
           >
             Login
           </Button>

@@ -30,7 +30,7 @@ function ProductItemDetail({ product }) {
   const addToCart = () => {
     setLoading(true);
     if (!jwt) {
-      router.push('/sign-in');
+      router.replace('/sign-in');
       setLoading(false);
       return;
     }

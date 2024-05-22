@@ -1,5 +1,8 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { CircleCheck } from 'lucide-react';
+import Link from 'next/link';
 
 function OrderConfirmation() {
   return (
@@ -10,7 +13,9 @@ function OrderConfirmation() {
           Successfully created!
         </h2>
         <h2 className='text-primary text-base'>Thank you!</h2>
-        <Button>Track your order</Button>
+        <Link href={'/my-order'}>
+          <Button>Track your order</Button>
+        </Link>
       </div>
     </div>
   );

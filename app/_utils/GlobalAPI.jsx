@@ -134,6 +134,31 @@ const createOrder = (data, jwt) =>
     })
     .catch((err) => console.log('Error while creating an order', err.message));
 
+const getUserOrders = (userId, jwt) =>
+  axiosClient
+    .get(
+      `/orders?filters[userId][$eq]=${userId}&[populate][orderItemList][populate][product][populate][images]=url&sort=id:desc`,
+      {
+        headers: {
+          Authorization: 'Bearer ' + jwt,
+        },
+      }
+    )
+    .then((res) => {
+      const data = res.data.data;
+      const ordersList = data.map((item) => ({
+        order_id: item.id,
+        total_order_amount: item.attributes.total_order_amount,
+        paymentId: item.attributes.paymentId,
+        address: item.attributes.address,
+        orderItemList: item.attributes.orderItemList,
+        created_at: item.attributes.createdAt,
+        status: item.attributes.status,
+      }));
+      return ordersList;
+    })
+    .catch((err) => console.log('Error while getting all orders', err.message));
+
 export default {
   getCategories,
   getSliders,
@@ -147,5 +172,6 @@ export default {
   getCartItemsAndImages,
   deleteCartItem,
   createOrder,
+  getUserOrders,
 };
 

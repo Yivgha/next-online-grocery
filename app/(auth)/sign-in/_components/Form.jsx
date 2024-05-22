@@ -60,7 +60,7 @@ export function LoginForm() {
         localStorage.setItem('user', JSON.stringify(res.data.user));
         localStorage.setItem('jwt', res.data.jwt);
 
-        router.push('/');
+        router.replace('/');
       } else {
         toast.error('Failed to login to account. Please try again.');
       }
@@ -74,7 +74,7 @@ export function LoginForm() {
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
-      router.push('/');
+      router.replace('/');
     }
   }, []);
 

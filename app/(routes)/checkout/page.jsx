@@ -45,7 +45,7 @@ function Checkout() {
 
   useEffect(() => {
     if (!jwt) {
-      router.push('/sign-in');
+      router.replace('/sign-in');
     }
     getCartItemList();
   }, [updateCart]);
