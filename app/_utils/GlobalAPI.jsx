@@ -159,6 +159,13 @@ const getUserOrders = (userId, jwt) =>
     })
     .catch((err) => console.log('Error while getting all orders', err.message));
 
+// SEARCH BY PRODUCT NAME
+
+const searchByProductName = (searchValue) =>
+  axiosClient
+    .get(`/products?filters[name][$containsi]=${searchValue}&populate=*`)
+    .then((res) => res.data.data)
+    .catch((err) => console.log('Error while searching products', err.message));
 export default {
   getCategories,
   getSliders,
@@ -173,5 +180,6 @@ export default {
   deleteCartItem,
   createOrder,
   getUserOrders,
+  searchByProductName,
 };
 

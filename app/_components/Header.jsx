@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { Outfit } from 'next/font/google';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -30,6 +30,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { UpdateCartContext } from '../_context/UpdateCartContext';
 import CartItemsList from './CartItemsList';
 import { toast } from 'sonner';
+import debounce from '../hooks/debounce';
 
 const outfit = Outfit({ subsets: ['latin'], display: 'swap' });
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
@@ -39,6 +40,9 @@ function Header() {
   const [totalCartItems, setTotalCartItems] = useState(0);
   const [cartItemList, setCartItemList] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
+
+  const [searchValue, setSearchValue] = useState('');
+  const [debouncedVal, setDebouncedVal] = useState('');
 
   const storageUser = JSON.parse(localStorage.getItem('user'));
   const jwt = localStorage.getItem('jwt');
@@ -98,6 +102,16 @@ function Header() {
     getCartItemList();
   }, [updateCart]);
 
+  // DEBOUNCE AND SEARCH BY INPUT
+  const debouncedSearch = debounce((searchTerm) => {
+    setDebouncedVal(searchTerm);
+  }, 500);
+
+  const handleInputSearch = (e) => {
+    setSearchValue(e.target.value);
+    debouncedSearch(e.target.value);
+  };
+
   return (
     <header
       className='min-h-5 w-full py-3 px-5 bg-primary shadow-md flex flex-col md:flex-row  items-center justify-center md:justify-between gap-3 md:gap-0'
@@ -143,11 +157,25 @@ function Header() {
 
         {!isSignIn && (
           <div className='gap-3 items-center border rounded-full py-2 px-5 hidden md:flex'>
-            <Search className='w-5 h-5 text-secondary' />
+            <Search
+              className='w-5 h-5 text-secondary cursor-pointer'
+              onClick={() => router.push(`/search/${debouncedVal}`)}
+            />
+
             <input
               type='text'
+              value={searchValue}
               placeholder='Search'
               className='border-none outline-none bg-primary text-secondary'
+              onChange={(e) => {
+                handleInputSearch(e);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleInputSearch(e);
+                  router.push(`/search/${debouncedVal}`);
+                }
+              }}
             />
           </div>
         )}

@@ -126,11 +126,7 @@ function ProductItemDetail({ product }) {
             onClick={() => addToCart()}
           >
             <ShoppingBag />
-            {loading ? (
-              <LoaderIcon className='animation-spinner' />
-            ) : (
-              'Add to Cart'
-            )}
+            {loading ? <LoaderIcon className='animate-spin' /> : 'Add to Cart'}
           </Button>
         </div>
         <h4 className='text-primary'>
