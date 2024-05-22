@@ -232,7 +232,10 @@ function Header() {
               <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className='cursor-pointer'>
+                <DropdownMenuItem
+                  className='cursor-pointer'
+                  onClick={() => router.replace('/profile')}
+                >
                   Profile
                 </DropdownMenuItem>
                 <DropdownMenuItem
