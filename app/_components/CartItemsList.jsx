@@ -32,7 +32,7 @@ function CartItemsList({ cartItemList, onDeleteItem }) {
             <TrashIcon
               className='w-5 h-5 text-destructive cursor-pointer absolute bottom-3 right-3 md:top-1 md:right-1'
               onClick={() => {
-                onDeleteItem(el.product_id);
+                onDeleteItem(el.id);
               }}
             />
           </div>

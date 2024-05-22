@@ -88,3 +88,6 @@ input::placeholder {
   display: none;
 }
 
+.paypalbtn {
+  z-index: 0 !important;
+}

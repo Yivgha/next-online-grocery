@@ -4,12 +4,12 @@ import { useState, useEffect, useContext } from 'react';
 import { Outfit } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { ArrowBigRight } from 'lucide-react';
 import GlobalAPI from '@/app/_utils/GlobalAPI';
 import { UpdateCartContext } from '@/app/_context/UpdateCartContext';
 import { useRouter } from 'next/navigation';
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 
 const outfit = Outfit({ subsets: ['latin'], weight: '400', display: 'swap' });
 
@@ -19,7 +19,7 @@ function Checkout() {
 
   const router = useRouter();
 
-  const { updateCart } = useContext(UpdateCartContext);
+  const { updateCart, setUpdateCart } = useContext(UpdateCartContext);
 
   const [cartItemList, setCartItemList] = useState([]);
   const [totalCartItems, setTotalCartItems] = useState(0);
@@ -57,7 +57,6 @@ function Checkout() {
       cartItemList.forEach((el) => (total += el.amount));
       const calculatedSubtotal = Number(total.toFixed(2));
       setSubtotal(calculatedSubtotal);
-      console.log('Calculated Subtotal:', calculatedSubtotal);
 
       const calcTax = Number((calculatedSubtotal * 0.15).toFixed(2));
       setTax(calcTax);
@@ -65,28 +64,52 @@ function Checkout() {
       const calcTotalAmount = calculatedSubtotal * 1.15 + 30;
       const totalAmountInUAH = Number(calcTotalAmount.toFixed(2));
       setTotalAmount(totalAmountInUAH);
-      console.log('Calculated Total:', totalAmountInUAH);
 
       const exchangeRate = 0.036;
       const calcInUSD = totalAmountInUAH * exchangeRate;
       const totalAmountInUSD = Number(calcInUSD.toFixed(2));
       setConvertedInUSD(totalAmountInUSD);
-      console.log('Calculated USD:', totalAmountInUSD);
 
       setIsCalculating(false);
     }
   }, [cartItemList]);
 
-  const onSubmit = () => {
-    const data = {
-      username,
-      email,
-      phone,
-      zip,
-      address,
-      totalAmount,
-    };
+  const onApprove = async (data) => {
     console.log(data);
+
+    const stringPaymentId = data?.paymentId.toString();
+    const payload = {
+      data: {
+        paymentId: stringPaymentId,
+        total_order_amount: totalAmount,
+        username: username,
+        email: email,
+        phone: phone,
+        zip: zip,
+        address: address,
+        userId: user.id,
+        orderItemList: cartItemList,
+      },
+    };
+
+    try {
+      const res = await GlobalAPI.createOrder(payload, jwt);
+      console.log('res', res);
+      toast('Created an order');
+
+      await Promise.all(
+        cartItemList.map((el) => {
+          GlobalAPI.deleteCartItem(el.id, jwt);
+          console.log('delete item', el.id);
+        })
+      );
+
+      setUpdateCart((prev) => !prev);
+
+      router.replace('/order-confirmation');
+    } catch (err) {
+      toast('Error while creating order.', err.message);
+    }
   };
 
   return (
@@ -143,13 +166,6 @@ function Checkout() {
             <h4 className='text-green-700 font-bold text-lg flex justify-between'>
               Total: <span>{totalAmount} UAH</span>
             </h4>
-            {/* <Button
-              type='submit'
-              className='flex flex-row gap-2 items-center'
-              onClick={onSubmit}
-            >
-              Payment <ArrowBigRight />
-            </Button> */}
 
             {!isCalculating && (
               <PayPalScriptProvider
@@ -158,8 +174,15 @@ function Checkout() {
                   currency: 'USD',
                 }}
               >
+                {/* For testing order data */}
+                <Button onClick={() => onApprove({ paymentId: 133 })}>
+                  Payment
+                </Button>
                 <PayPalButtons
                   style={{ layout: 'horizontal', tagline: false }}
+                  className='paypalbtn'
+                  disabled={!username || !email || !phone || !zip || !address}
+                  onApprove={onApprove}
                   createOrder={(data, actions) => {
                     return actions.order.create({
                       purchase_units: [

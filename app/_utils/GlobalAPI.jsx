@@ -104,7 +104,8 @@ const getCartItemsAndImages = (userID, jwt) =>
         actual_price: item.attributes.products.data[0].attributes.actual_price,
         selling_price:
           item.attributes.products.data[0].attributes.selling_price,
-        product_id: item.id,
+        id: item.id,
+        product: item.attributes.products.data[0].id,
       }));
 
       return cartItemsList;
@@ -121,8 +122,17 @@ const deleteCartItem = (cartItemId, jwt) =>
       },
     })
     .catch((err) =>
-      console.log('Error while getting user cart items', err.message)
+      console.log('Error while deleting user cart items', err.message)
     );
+
+const createOrder = (data, jwt) =>
+  axiosClient
+    .post(`/orders`, data, {
+      headers: {
+        Authorization: 'Bearer ' + jwt,
+      },
+    })
+    .catch((err) => console.log('Error while creating an order', err.message));
 
 export default {
   getCategories,
@@ -136,5 +146,6 @@ export default {
   getCartItems,
   getCartItemsAndImages,
   deleteCartItem,
+  createOrder,
 };
 
