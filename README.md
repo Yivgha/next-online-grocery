@@ -4,7 +4,7 @@
 
 ## About
 
-This is an example of React app created with Next.js and Strapi backend plust PostgreSQL database deployed on Render.com. For styling i used TailwindCSS, some Shadcn components and Lucide icons. The main idea is to create realistic online grocery store with basic functionality:
+This is an example of React app created with Next.js and Strapi backend plus PostgreSQL database deployed on Render.com. For styling i used TailwindCSS, some Shadcn components and Lucide icons. The main idea is to create realistic online grocery store with basic functionality:
 
 - See list of products by category or search.
 - Create user who can add products to cart, delete and make an order.
@@ -51,7 +51,7 @@ On Checkout page user can add info for future delivery. They can fill info and a
 
 ![Main](/public/about/checkout.jpg)
 
-But with PayPal usage user will see their pop-up and must create a wallet a pay calculated sum in USD to finish order.
+But with PayPal usage user will see their pop-up and must create a wallet and pay calculated sum in USD to finish order.
 
 ![Main](/public/about/pay_pal.jpg)
 
